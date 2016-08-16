@@ -11,6 +11,7 @@
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.1.3"]]
   :ring {:handler lolx-auth.handler/app}
+  :uberjar-name "lolx-auth-standalone.jar"
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring/ring-mock "0.3.0"]
