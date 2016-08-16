@@ -17,7 +17,7 @@
      (fn [users]
        (conj 
         users 
-        {:id id :first-name first-name :last-name last-name :password password})))
+        {:id id :first-name first-name :last-name last-name :email email :password password})))
     true
     (catch IllegalStateException e false)))
 

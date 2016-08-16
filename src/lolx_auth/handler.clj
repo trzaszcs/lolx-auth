@@ -14,6 +14,6 @@
 
 (def app
   (-> app-routes
-      (wrap-defaults (assoc-in site-defaults [:security] {:anti-forgery false}))
       (wrap-json-response)
-      (wrap-json-body {:keywords? true :bigdecimals? true})))
+      (wrap-json-body {:keywords? true :bigdecimals? true})
+      (wrap-defaults (assoc-in site-defaults [:security] {:anti-forgery false}))))
