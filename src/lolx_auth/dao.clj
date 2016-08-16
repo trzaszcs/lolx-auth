@@ -10,14 +10,14 @@
 (def in-memory-db (atom [] :validator unique-emails-validator))
 
 (defn add-user
-  [first-name last-name email password]
+  [id first-name last-name email password]
   (try
     (swap! 
      in-memory-db
      (fn [users]
        (conj 
         users 
-        {:first-name first-name :last-name last-name :password password})))
+        {:id id :first-name first-name :last-name last-name :password password})))
     true
     (catch IllegalStateException e false)))
 

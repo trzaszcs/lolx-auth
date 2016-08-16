@@ -10,7 +10,7 @@
   {:iss issuer
    :exp (plus (now) (days 1))
    :iat (now)
-   :userId user-id}
+   :sub user-id}
 )
 
 (def rsa-prv-key (private-key "rsa/private" "password"))

@@ -17,10 +17,13 @@
   (let [first-name "john"
         last-name "deer"
         email "deer@wp.pl"
-        password "pass"]
+        password "pass"
+        fake-id "gen-id"]
     (register (request first-name last-name email password)) => {:status 409}
     (provided
+     (gen-id!) => fake-id
      (dao/add-user 
+      fake-id
       first-name 
       last-name 
       email 
@@ -30,10 +33,13 @@
   (let [first-name "john"
         last-name "deer"
         email "deer@wp.pl"
-        password "pass"]
+        password "pass"
+        fake-id "gen-id"]
     (register (request first-name last-name email password)) => {:status 200}
     (provided
+     (gen-id!) => fake-id
      (dao/add-user 
+      fake-id
       first-name 
       last-name 
       email 
