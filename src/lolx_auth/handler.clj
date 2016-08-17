@@ -6,7 +6,8 @@
             [lolx-auth.authentication :refer [auth]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
-            [ring.adapter.jetty :as jetty]))
+            [ring.adapter.jetty :as jetty]
+            [environ.core :refer [env]]))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
@@ -22,5 +23,5 @@
 
 
 (defn -main [& [port]]
-  (let [port (Integer. (or port 5000))]
+  (let [port (Integer. (or port (env :port) 5000))]
     (jetty/run-jetty (site #'app) {:port port :join? false})))

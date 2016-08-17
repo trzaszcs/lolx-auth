@@ -8,7 +8,8 @@
                  [ring/ring-json "0.4.0"]
                  [digest "1.4.4"]
                  [clj-jwt "0.1.1"]
-                 [ring/ring-jetty-adapter "1.4.0"]]
+                 [ring/ring-jetty-adapter "1.4.0"]
+                 [environ "1.0.0"]]
   :plugins [[lein-ring "0.9.7"]
             [lein-midje "3.1.3"]]
   :ring {:handler lolx-auth.handler/app}
