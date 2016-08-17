@@ -1,1 +1,1 @@
-web: java $JVM_OPTS -cp target/lolx-auth-standalone.jar clojure.main -m lolx-auth.handler
+web: lein ring server-headless
