@@ -2,7 +2,8 @@
   (:require 
    [clj-jwt.core  :refer :all]
    [clj-jwt.key   :refer [private-key]]
-   [clj-time.core :refer [now plus days]]))
+   [clj-time.core :refer [now plus days]]
+   [clojure.java.io :as io]))
 
 
 (defn build-claim
@@ -13,7 +14,7 @@
    :sub user-id}
 )
 
-(def rsa-prv-key (private-key "rsa/private" "password"))
+(def rsa-prv-key (private-key (io/resource "rsa/private") "password"))
 
 (defn produce
   [issuer user-id]
