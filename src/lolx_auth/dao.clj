@@ -7,7 +7,15 @@
     #(:email %)
     users)))
 
-(def in-memory-db (atom [] :validator unique-emails-validator))
+(def in-memory-db 
+  (atom 
+   [{
+     :id "666"
+     :first-name "John" 
+     :last-name "Deer" 
+     :email "john@wp.pl"
+     :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"}] 
+   :validator unique-emails-validator))
 
 (defn add-user
   [id first-name last-name email password]
