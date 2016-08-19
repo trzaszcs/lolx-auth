@@ -3,6 +3,7 @@
             [compojure.route :as route]
             [compojure.handler :refer [site]]
             [lolx-auth.register :refer [register]]
+            [lolx-auth.user :refer [details]]
             [lolx-auth.authentication :refer [auth]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
@@ -12,6 +13,7 @@
 (defroutes app-routes
   (GET "/" [] "Hello World")
   (POST "/register" []  register)
+  (GET "/users/:user-id" []  details)
   (POST "/auth" [] auth)
   (route/not-found "Not Found"))
 

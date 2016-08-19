@@ -18,6 +18,7 @@ To start a web server for the application, run:
 
 to generate priv-pub key: ssh-keygen
 to generate DER format for public key (for java): openssl rsa -in private_key.pem -pubout -outform DER -out public_key.der
+to generate public key in RSA format: openssl rsa -in private -pubout > mykey.pub
 
 ## License
 

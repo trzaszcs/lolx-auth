@@ -29,6 +29,14 @@
     true
     (catch IllegalStateException e false)))
 
+(defn find-by-id
+  [id]
+  (first
+   (filter
+    #(= id (:id %))
+    @in-memory-db
+    )))
+
 (defn find
   [email password]
   (first
