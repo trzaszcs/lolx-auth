@@ -1,4 +1,7 @@
-(ns lolx-auth.dao)
+(ns lolx-auth.dao
+  (:require [clj-time.core :refer [now]] ))
+
+
 
 (defn unique-emails-validator
   [users]
@@ -16,7 +19,8 @@
      :email "john@wp.pl"
      :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
      :state "wlkp"
-     :city "Poznan"}] 
+     :city "Poznan"
+     :created (now)}] 
    :validator unique-emails-validator))
 
 (defn add-user
@@ -33,7 +37,8 @@
          :email email 
          :state state 
          :city city 
-         :password password})))
+         :password password
+         :created (now)})))
     true
     (catch IllegalStateException e false)))
 
