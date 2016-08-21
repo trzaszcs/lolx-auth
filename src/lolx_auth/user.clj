@@ -17,7 +17,7 @@
   (let [details (dao/find-by-id user-id)]
     (if (and (not (nil? jwt)) (jwt/ok? jwt))
       (dissoc details :password)
-      (dissoc details :password :email)
+      (dissoc details :password :email :lastName :city :state)
       )
 ))
 
