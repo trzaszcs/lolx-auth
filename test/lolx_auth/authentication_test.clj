@@ -25,7 +25,7 @@
         password "pass"
         user-id "usrId"
         jwt "someJwt"]
-    (auth (request email password)) => {:body {:jwt jwt}}
+    (auth (request email password)) => {:body {:jwt jwt :userId user-id}}
     (provided
      (jwt/produce "frontend" user-id) => jwt
      (dao/find 

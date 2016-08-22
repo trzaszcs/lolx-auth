@@ -9,8 +9,9 @@
 (defn auth
   [request]
   (let [{email :email password :password} (:body request)
-        user (dao/find email (digest/sha-256 password))]
+        user (dao/find email (digest/sha-256 password))
+        user-id (:id user)]
     (if (nil? user)
       {:status 401}
-      {:body {:jwt (jwt/produce "frontend" (:id user))}}
+      {:body {:jwt (jwt/produce "frontend" user-id) :userId user-id }}
       )))
