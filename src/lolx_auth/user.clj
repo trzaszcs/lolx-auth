@@ -4,6 +4,7 @@
    [lolx-auth.validation :as validation]
    [lolx-auth.dao :as dao]
    [lolx-auth.jwt :as jwt]
+   [clj-time.format :as format]
    [ring.util.response :refer :all]))
 
 (defn- extract-jwt
@@ -21,6 +22,11 @@
       )
 ))
 
+(defn serialize
+  [user]
+  (let [iso-formatter (format/formatters :date-time)]
+    (assoc user :created (format/unparse iso-formatter (:created user)))
+    ))
 
 (defn details
   [request]
@@ -28,4 +34,4 @@
         jwt (extract-jwt (:headers request))]
     (if (nil? user-id)
       {:status 400}
-      {:body (get-user user-id jwt)})))
+      {:body (serialize (get-user user-id jwt))})))
