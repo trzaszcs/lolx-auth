@@ -4,7 +4,7 @@
             [compojure.handler :refer [site]]
             [lolx-auth.register :refer [register]]
             [lolx-auth.user :refer [details]]
-            [lolx-auth.authentication :refer [auth]]
+            [lolx-auth.authentication :refer [auth auth-facebook]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.adapter.jetty :as jetty]
@@ -15,6 +15,7 @@
   (POST "/register" []  register)
   (GET "/users/:user-id" []  details)
   (POST "/auth" [] auth)
+  (POST "/auth-facebook" [] auth-facebook)
   (route/not-found "Not Found"))
 
 (def app

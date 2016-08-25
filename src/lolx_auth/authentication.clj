@@ -15,3 +15,8 @@
       {:status 401}
       {:body {:jwt (jwt/produce "frontend" user-id) :userId user-id }}
       )))
+
+(defn auth-facebook
+  [request]
+  (let [{code :code} (:body request)]
+     {:status 401}))
