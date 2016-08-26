@@ -7,7 +7,11 @@
 (def secret "95cacd503b559bd532b7764e7d508add1")
 
 
-(defn- exchange-token!
+(defn- json
+  [str]
+  (json/read-str json :key-fn keyword))
+
+(defn- http-exchange-token!
   [code]
   (http/get 
    "https://graph.facebook.com/v2.3/oauth/access_token"
@@ -17,8 +21,25 @@
              :client_secret secret
              :code code}}))
 
+(defn- http-user-details!
+  [access-token]
+  (http/get 
+   "https://graph.facebook.com/v2.7/me?"
+   {:query-params {:access_token access-token
+                   :fields ["id" "first_name" "last_name" "email" "location" "hometown"]}}))
+
 (defn access-token!
   "exchanges token to access token"
   [code]
-  (:access_token (json/read-str (exchangeToken code) :key-fn keyword)))
+  (:access_token (json ((http-exchange-token! code) :body))))
 
+
+(defn user-details!
+  [access-token]
+  (let [response (http-user-details! access-token)
+        jsn (json (response :body))]
+    (if (= 200 (response :status))
+      (assoc {} :first-name (jsn :first_name) :last-name (jsn :last_name) :email (jsn :email) :location (or (json :location) (json :hometown) :id (jsn :id)))
+      nil
+      )
+    ))

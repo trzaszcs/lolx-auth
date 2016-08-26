@@ -38,7 +38,45 @@
          :state state 
          :city city 
          :password password
+         :type "standard"
          :created (now)})))
+    true
+    (catch IllegalStateException e false)))
+
+(defn add-fb-user
+  [id first-name last-name email city facebook-id]
+  (try
+    (swap! 
+     in-memory-db
+     (fn [users]
+       (conj 
+        users 
+        {:id id
+         :first-name first-name 
+         :last-name last-name 
+         :email email 
+         :city city 
+         :type "facebook"
+         :facebook-id facebook-id
+         :created (now)})))
+    true
+    (catch IllegalStateException e false)))
+
+(defn link-fb-account
+  [id facebook-id]
+  (try
+    (swap! 
+     in-memory-db
+     (fn [users]
+       (map
+        (fn [user]
+          (if (= id (user :id))
+            (assoc user :facebook-id facebook-id)
+            user
+            )
+          )
+        users
+        )))
     true
     (catch IllegalStateException e false)))
 
@@ -47,6 +85,22 @@
   (first
    (filter
     #(= id (:id %))
+    @in-memory-db
+    )))
+
+(defn find-by-fb-id
+  [fb-id]
+  (first
+   (filter
+    #(= fb-id (:facebook-id %))
+    @in-memory-db
+    )))
+
+(defn find-by-email
+  [email]
+  (first
+   (filter
+    #(= email (:email %))
     @in-memory-db
     )))
 
