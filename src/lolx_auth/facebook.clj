@@ -2,9 +2,9 @@
   (:require [clj-http.client :as http]
             [clojure.data.json :as json]))
 
-(def client-id "10698494897173171")
+(def client-id "1069849489717317")
 (def redirect-uri "http://lolx-front.herokuapp.com/login")
-(def secret "95cacd503b559bd532b7764e7d508add1")
+(def secret "95cacd503b559bd532b7764e7d508add")
 
 
 (defn- json
