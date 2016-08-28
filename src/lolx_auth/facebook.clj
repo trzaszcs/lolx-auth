@@ -14,7 +14,7 @@
 (defn- http-exchange-token!
   [code]
   (http/get 
-   "https://graph.facebook.com/v2.3/oauth/access_token"
+   "https://graph.facebook.com/v2.7/oauth/access_token"
    {:query-params {
              :client_id client-id
              :redirect_uri redirect-uri
