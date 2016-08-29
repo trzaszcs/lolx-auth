@@ -12,7 +12,7 @@
 
 (defn- json
   [str]
-  (json/read-str json :key-fn keyword))
+  (json/read-str str :key-fn keyword))
 
 (defn- http-exchange-token!
   [code]
