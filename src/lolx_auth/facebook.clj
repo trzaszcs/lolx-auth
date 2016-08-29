@@ -43,7 +43,7 @@
   (let [response (http-user-details! access-token)
         jsn (to-json (response :body))]
     (if (= 200 (response :status))
-      (assoc {} :first-name (jsn :first_name) :last-name (jsn :last_name) :email (jsn :email) :location (or (json :location) (json :hometown) :id (jsn :id)))
+      (assoc {} :first-name (jsn :first_name) :last-name (jsn :last_name) :email (jsn :email) :location (or (jsn :location) (jsn :hometown) :id (jsn :id)))
       nil
       )
     ))
