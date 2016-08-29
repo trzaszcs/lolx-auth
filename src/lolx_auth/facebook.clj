@@ -3,7 +3,7 @@
             [clojure.data.json :as json]))
 
 (def client-id "1069849489717317")
-(def redirect-uri "http://lolx-front.herokuapp.com/#/fb")
+(def redirect-uri "http://lolx-front.herokuapp.com/fb")
 (def secret "95cacd503b559bd532b7764e7d508add")
 
 (defn- encode
