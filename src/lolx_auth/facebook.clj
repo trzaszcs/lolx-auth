@@ -6,6 +6,9 @@
 (def redirect-uri "http://lolx-front.herokuapp.com/#!/fb")
 (def secret "95cacd503b559bd532b7764e7d508add")
 
+(defn- encode
+  [str]
+  (java.net.URLEncoder/encode str "UTF-8"))
 
 (defn- json
   [str]
@@ -17,7 +20,7 @@
    "https://graph.facebook.com/v2.7/oauth/access_token"
    {:query-params {
              :client_id client-id
-             :redirect_uri redirect-uri
+             :redirect_uri (encode redirect-uri)
              :client_secret secret
              :code code}}))
 
