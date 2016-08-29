@@ -10,7 +10,7 @@
   [str]
   (java.net.URLEncoder/encode str "UTF-8"))
 
-(defn- json
+(defn- to-json
   [str]
   (json/read-str str :key-fn keyword))
 
@@ -35,13 +35,13 @@
 (defn access-token!
   "exchanges token to access token"
   [code]
-  (:access_token (json ((http-exchange-token! code) :body))))
+  (:access_token (to-json ((http-exchange-token! code) :body))))
 
 
 (defn user-details!
   [access-token]
   (let [response (http-user-details! access-token)
-        jsn (json (response :body))]
+        jsn (to-json (response :body))]
     (if (= 200 (response :status))
       (assoc {} :first-name (jsn :first_name) :last-name (jsn :last_name) :email (jsn :email) :location (or (json :location) (json :hometown) :id (jsn :id)))
       nil
