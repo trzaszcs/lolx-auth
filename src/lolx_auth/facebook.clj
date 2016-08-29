@@ -20,7 +20,7 @@
    "https://graph.facebook.com/v2.7/oauth/access_token"
    {:query-params {
              :client_id client-id
-             :redirect_uri (encode redirect-uri)
+             :redirect_uri redirect-uri
              :client_secret secret
              :code code}}))
 
