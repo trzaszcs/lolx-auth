@@ -29,8 +29,8 @@
   [access-token]
   (http/get 
    "https://graph.facebook.com/v2.7/me?"
-   {:query-params {:access_token access-token
-                   :fields "id, first_name, last_name, email, location, hometown"}}))
+   {:query-params {"access_token" access-token
+                   "fields" "id, first_name, last_name, email, location, hometown"}}))
 
 (defn access-token!
   "exchanges token to access token"
