@@ -5,6 +5,7 @@
    [lolx-auth.dao :as dao]
    [lolx-auth.jwt :as jwt]
    [clj-time.format :as format]
+   [digest :as digest]
    [ring.util.response :refer :all]))
 
 (defn- extract-jwt
