@@ -16,7 +16,7 @@
 (defn- get-user
   [user-id jwt]
   (let [details (dao/find-by-id user-id)]
-    (if (and (not (nil? jwt)) (jwt/ok? jwt))
+    (if (and jwt (jwt/ok? jwt))
       (dissoc details :password)
       (dissoc details :password :email :lastName :city :state)
       )
@@ -28,10 +28,31 @@
     (assoc user :created (format/unparse iso-formatter (:created user)))
     ))
 
-(defn details
+(defn gen-id!
+  []
+  (str (java.util.UUID/randomUUID)))
+
+(defn get
   [request]
   (let [user-id (:user-id (:params request))
         jwt (extract-jwt (:headers request))]
     (if (nil? user-id)
       {:status 400}
       {:body (serialize (get-user user-id jwt))})))
+
+
+(defn register
+  [request]
+  (let [{first-name :firstName 
+         last-name :lastName 
+         email :email 
+         password :password 
+         city :city 
+         state :state} (:body request)]
+    (if (not (validation/registration-valid? first-name last-name email password state city))
+      {:status 400}
+      (do
+       (if (dao/add-user (gen-id!) first-name last-name email state city (digest/sha-256 password))
+         {:status 200}
+         {:status 409}
+         )))))

@@ -1,7 +1,7 @@
-(ns lolx-auth.register-test
+(ns lolx-auth.user-registration-test
   (:use midje.sweet)
   (:require
-   [lolx-auth.register :refer :all]
+   [lolx-auth.user :refer :all]
    [lolx-auth.dao :as dao]
    [digest :as digest]))
 
@@ -19,13 +19,11 @@
         email "deer@wp.pl"
         password "pass"
         city "city"
-        state "state"
-        fake-id "gen-id"]
+        state "state"]
     (register (request first-name last-name email password state city)) => {:status 409}
     (provided
-     (gen-id!) => fake-id
      (dao/add-user 
-      fake-id
+      anything
       first-name 
       last-name 
       email
@@ -39,13 +37,11 @@
         email "deer@wp.pl"
         password "pass"
         city "city"
-        state "state"
-        fake-id "gen-id"]
+        state "state"]
     (register (request first-name last-name email password state city)) => {:status 200}
     (provided
-     (gen-id!) => fake-id
      (dao/add-user 
-      fake-id
+      anything
       first-name 
       last-name 
       email 

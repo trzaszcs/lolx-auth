@@ -1,4 +1,4 @@
-(ns lolx-auth.user-test
+(ns lolx-auth.user-get-details-test
   (:use midje.sweet)
   (:require
    [lolx-auth.user :refer :all]
@@ -10,7 +10,7 @@
 (fact "should return short details if no jwt token"
   (let [user-id "234"
         first-name "Julio"]
-    (details {:params {:user-id user-id}}) => #(get-in % [:body :first-name]) 
+    (get {:params {:user-id user-id}}) => #(get-in % [:body :first-name]) 
     (provided
      (dao/find-by-id user-id) => {:first-name first-name :email "secret-email"})))
 
@@ -19,7 +19,7 @@
         first-name "Julio"
         email "secret-email"
         jwt "SOME-JWT"]
-    (details {:params {:user-id user-id} :headers {"authorization" (str "Bearer " jwt) }}) 
+    (get {:params {:user-id user-id} :headers {"authorization" (str "Bearer " jwt) }}) 
       => 
     #(get-in % [:body :email]) 
     (provided
