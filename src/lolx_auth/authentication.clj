@@ -27,7 +27,7 @@
   (let [{code :code} (:body request)
         access-token (fb/access-token! code)
         details (fb/user-details! access-token)]
-    (if (details)
+    (if details
       (do
         ; check if user is currently created
         (if-let [user (dao/find-by-fb-id (details :id))]
@@ -44,5 +44,4 @@
               (build-jwt-response! (details :id))
               ))))
       {:status 407}
-      )
-     {:status 401}))
+      )))
