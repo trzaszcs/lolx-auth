@@ -23,5 +23,4 @@
 
 (defn ok?
   [jwt]
-  (println "->"jwt"<-")
   (-> jwt str->jwt (verify rsa-pub-key)))

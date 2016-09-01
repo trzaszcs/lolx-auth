@@ -5,6 +5,8 @@
    [lolx-auth.dao :as dao]
    [lolx-auth.jwt :as jwt]
    [clj-time.format :as format]
+   [camel-snake-kebab.core :refer :all]
+   [camel-snake-kebab.extras :refer [transform-keys]]
    [digest :as digest]
    [ring.util.response :refer :all]))
 
@@ -14,14 +16,20 @@
     (when (not (nil? authorization-header))
       (clojure.string/replace-first authorization-header #"Bearer " ""))))
 
+(defn- camel-case
+  [map]
+  (transform-keys 
+     ->camelCaseString
+     map))
+
 (defn- get-user
   [user-id jwt]
   (let [details (dao/find-by-id user-id)]
-    (if (and jwt (jwt/ok? jwt))
-      (dissoc details :password)
-      (dissoc details :password :email :lastName :city :state)
-      )
-))
+    
+     (if (and jwt (jwt/ok? jwt))
+       (dissoc details :password) 
+       (dissoc details :password :email :last-name :city :state) 
+       )))
 
 (defn serialize
   [user]
@@ -39,7 +47,7 @@
         jwt (extract-jwt (:headers request))]
     (if (nil? user-id)
       {:status 400}
-      {:body (serialize (get-user user-id jwt))})))
+      {:body (camel-case (serialize (get-user user-id jwt)))})))
 
 
 (defn register
