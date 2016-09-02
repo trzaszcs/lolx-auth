@@ -22,5 +22,9 @@
   (-> (build-claim issuer user-id) jwt (sign :RS256 rsa-prv-key) to-str))
 
 (defn ok?
-  [jwt]
-  (-> jwt str->jwt (verify rsa-pub-key)))
+  [jwt-token subject]
+  (let [jwt (str->jwt jwt-token)]
+    (and 
+     (verify jwt rsa-pub-key)
+     (= subject (get-in jwt [:claims :sub]))) 
+    ))

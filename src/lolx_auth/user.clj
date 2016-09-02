@@ -25,8 +25,7 @@
 (defn- get-user
   [user-id jwt]
   (let [details (dao/find-by-id user-id)]
-    
-     (if (and jwt (jwt/ok? jwt))
+     (if (and jwt (jwt/ok? jwt user-id))
        (dissoc details :password) 
        (dissoc details :password :email :last-name :city :state) 
        )))
@@ -41,7 +40,7 @@
   []
   (str (java.util.UUID/randomUUID)))
 
-(defn get
+(defn details
   [request]
   (let [user-id (:user-id (:params request))
         jwt (extract-jwt (:headers request))]
@@ -65,3 +64,21 @@
          {:status 200}
          {:status 409}
          )))))
+
+(defn update-account
+  [request]
+  (let [user-id (get-in request [:params :user-id])
+        jwt (extract-jwt (:headers request))
+        {first-name :firstName 
+         last-name :lastName
+         city :city 
+         state :state} (:body request)]
+    (if (not (validation/update-account-valid? first-name last-name state city))
+      {:status 400}
+      (do
+       (if (and jwt (jwt/ok? jwt user-id))
+         (do 
+           (dao/update user-id first-name last-name state city)
+           {:status 200})
+         {:status 401}
+       )))))

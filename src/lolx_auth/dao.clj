@@ -80,6 +80,24 @@
     true
     (catch IllegalStateException e false)))
 
+(defn update
+  [id first-name last-name state city]
+  (try
+    (swap! 
+     in-memory-db
+     (fn [users]
+       (map
+        (fn [user]
+          (if (= id (user :id))
+            (assoc user :first-name first-name :last-name :state state :city city)
+            user
+            )
+          )
+        users
+        )))
+    true
+    (catch IllegalStateException e false)))
+
 (defn find-by-id
   [id]
   (first

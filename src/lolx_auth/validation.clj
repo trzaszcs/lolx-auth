@@ -24,3 +24,10 @@
 (defn registration-valid? 
   [first-name last-name email password state city]
   (not (not-valid? first-name last-name email password city state)))
+
+(defn update-account-valid? 
+  [first-name last-name state city]
+  (every?
+   #(not (nil-or-empty? %))
+   [first-name last-name state city]
+   ))

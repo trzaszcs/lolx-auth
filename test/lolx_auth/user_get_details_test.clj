@@ -10,7 +10,7 @@
 (fact "should return short details if no jwt token"
   (let [user-id "234"
         first-name "Julio"]
-    (get {:params {:user-id user-id}}) => #(get-in % [:body "firstName"]) 
+    (details {:params {:user-id user-id}}) => #(get-in % [:body "firstName"]) 
     (provided
      (dao/find-by-id user-id) => {:first-name first-name :email "secret-email"})))
 
@@ -19,9 +19,9 @@
         first-name "Julio"
         email "secret-email"
         jwt "SOME-JWT"]
-    (get {:params {:user-id user-id} :headers {"authorization" (str "Bearer " jwt) }}) 
+    (details {:params {:user-id user-id} :headers {"authorization" (str "Bearer " jwt) }}) 
       => 
     #(get-in % [:body "email"]) 
     (provided
-     (jwt/ok? jwt) => true
+     (jwt/ok? jwt user-id) => true
      (dao/find-by-id user-id) => {:first-name first-name :email email})))
