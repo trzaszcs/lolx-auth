@@ -89,7 +89,7 @@
        (map
         (fn [user]
           (if (= id (user :id))
-            (assoc user :first-name first-name :last-name :state state :city city)
+            (assoc user :first-name first-name :last-name last-name :state state :city city)
             user
             )
           )
