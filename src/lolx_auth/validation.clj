@@ -17,17 +17,25 @@
       (nil-or-empty? state))
 )
 
+(defn- all-not-empty?
+  [list]
+  (every?
+   #(not (nil-or-empty? %))
+   list))
+
 (defn authroization-valid? 
   [email password]
-  (not (or (nil-or-empty? email) (nil-or-empty? password))))
+  (all-not-empty? [email password]))
 
 (defn registration-valid? 
   [first-name last-name email password state city]
-  (not (not-valid? first-name last-name email password city state)))
+  (all-not-empty? [first-name last-name email password city state]))
 
 (defn update-account-valid? 
-  [first-name last-name state city]
-  (every?
-   #(not (nil-or-empty? %))
-   [first-name last-name state city]
-   ))
+    [first-name last-name state city]
+    (all-not-empty?
+     [first-name last-name state city]))
+
+(defn change-password-valid? 
+  [old-password new-password]
+  (all-not-empty? [old-password new-password]))

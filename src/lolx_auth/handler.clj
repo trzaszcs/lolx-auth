@@ -2,7 +2,7 @@
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [compojure.handler :refer [site]]
-            [lolx-auth.user :refer [details register update-account]]
+            [lolx-auth.user :refer [details register update-account change-password]]
             [lolx-auth.authentication :refer [auth auth-facebook]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
@@ -14,6 +14,7 @@
   (POST "/users" []  register)
   (GET  "/users/:user-id" [] details)
   (PUT  "/users/:user-id" [] update-account)
+  (PUT  "/users/:user-id/change-password" [] change-password)
   (POST "/auth" [] auth)
   (POST "/auth-facebook" [] auth-facebook)
   (route/not-found "Not Found"))

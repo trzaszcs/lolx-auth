@@ -129,3 +129,21 @@
     #(and (= email (:email %)) (= password (:password %)))
     @in-memory-db
     )))
+
+(defn change-password
+  [id new-password]
+  (try
+    (swap! 
+     in-memory-db
+     (fn [users]
+       (map
+        (fn [user]
+          (if (= id (user :id))
+            (assoc user :password new-password)
+            user
+            )
+          )
+        users
+        )))
+    true
+    (catch IllegalStateException e false)))

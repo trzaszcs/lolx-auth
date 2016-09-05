@@ -82,3 +82,26 @@
            {:status 200})
          {:status 401}
        )))))
+
+(defn change-password
+  [request]
+  (let [user-id (get-in request [:params :user-id])
+        jwt (extract-jwt (:headers request))
+        {new-password :newPassword 
+         old-password :oldPassword} (:body request)]
+    (if (not (validation/change-password-valid? new-password old-password))
+      {:status 400}
+      (do 
+        (if (and jwt (jwt/ok? jwt user-id))
+          (do 
+            (let [user (dao/find-by-id user-id)]
+              (if (= (digest/sha-256 old-password) (:password user)) 
+                (do 
+                  (dao/change-password user-id (digest/sha-256 new-password))
+                  {:status 200}
+                  )
+                 {:status 409}
+                )
+             ))
+           {:status 401}
+          )))))
