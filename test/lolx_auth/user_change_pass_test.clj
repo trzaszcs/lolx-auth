@@ -12,7 +12,6 @@
    :body {:oldPassword old-password :newPassword new-password}
    :headers {"authorization" (str "Bearer " jwt) }})
 
-
 (fact "should return '401' when bad jwt"
   (let [user-id "234"
         jwt "JWT"
@@ -26,9 +25,11 @@
   (let [user-id "234"
         jwt "JWT"
         old-password "old"
-        new-password "new"]
+        new-password "new"
+        new-pass-hash (digest/sha-256 new-password)
+        old-pass-hash (digest/sha-256 old-password)]
     (change-password (request user-id jwt old-password new-password)) => {:status 200} 
     (provided
      (jwt/ok? jwt user-id) => true
-     (dao/find-by-id user-id) => {:password (digest/sha-256 old-password)}
-     (dao/change-password user-id (digest/sha-256 new-password)) => true)))
+     (dao/find-by-id user-id) => {:password old-pass-hash}
+     (dao/change-password user-id new-pass-hash) => true)))

@@ -69,16 +69,17 @@
   [request]
   (let [user-id (get-in request [:params :user-id])
         jwt (extract-jwt (:headers request))
-        {first-name :firstName 
+        {email :email
+         first-name :firstName 
          last-name :lastName
          city :city 
          state :state} (:body request)]
-    (if (not (validation/update-account-valid? first-name last-name state city))
+    (if (not (validation/update-account-valid? email first-name last-name state city))
       {:status 400}
       (do
        (if (and jwt (jwt/ok? jwt user-id))
          (do 
-           (dao/update user-id first-name last-name state city)
+           (dao/update user-id email first-name last-name state city)
            {:status 200})
          {:status 401}
        )))))

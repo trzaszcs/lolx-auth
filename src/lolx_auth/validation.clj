@@ -32,9 +32,9 @@
   (all-not-empty? [first-name last-name email password city state]))
 
 (defn update-account-valid? 
-    [first-name last-name state city]
+    [email first-name last-name state city]
     (all-not-empty?
-     [first-name last-name state city]))
+     [email first-name last-name state city]))
 
 (defn change-password-valid? 
   [old-password new-password]

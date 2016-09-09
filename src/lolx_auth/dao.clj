@@ -81,7 +81,7 @@
     (catch IllegalStateException e false)))
 
 (defn update
-  [id first-name last-name state city]
+  [id email first-name last-name state city]
   (try
     (swap! 
      in-memory-db
@@ -89,7 +89,7 @@
        (map
         (fn [user]
           (if (= id (user :id))
-            (assoc user :first-name first-name :last-name last-name :state state :city city)
+            (assoc user :email email :first-name first-name :last-name last-name :state state :city city)
             user
             )
           )
