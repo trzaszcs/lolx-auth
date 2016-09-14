@@ -8,7 +8,10 @@
    [camel-snake-kebab.core :refer :all]
    [camel-snake-kebab.extras :refer [transform-keys]]
    [digest :as digest]
-   [ring.util.response :refer :all]))
+   [ring.util.response :refer :all]
+   [clj-http.client :as http]
+   [environ.core :refer [env]]
+   [clojure.data.json :as json]))
 
 (defn- extract-jwt
   [headers]
@@ -48,6 +51,14 @@
       {:status 400}
       {:body (camel-case (serialize (get-user user-id jwt)))})))
 
+(defn- send-reset-pass!
+  [to id]
+  (let [back-url (str (env :front-addr) "/!#/reset?=" id)]
+    (http/post
+     (env :notification-addr)
+     {:content-type :json
+      :headers {"Authorization" (str "Bearer " (jwt/produce "lolx_auth" to))}
+      :body (json/write-str {:type "resetPass" :email to :context {:url back-url}})})))
 
 (defn register
   [request]
@@ -106,3 +117,14 @@
              ))
            {:status 401}
           )))))
+
+(defn reset-password
+  [request]
+  (let [user-id (get-in request [:params :user-id])
+        jwt (extract-jwt (:headers request))
+        ref-id (gen-id!)]
+    (if (and jwt (jwt/ok? jwt user-id))
+          (do 
+            (send-reset-pass! (:email (dao/reset-password user-id ref-id)) ref-id)
+            {:status 200})
+          {:status 401})))

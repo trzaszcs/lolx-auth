@@ -23,6 +23,24 @@
      :created (now)}] 
    :validator unique-emails-validator))
 
+(defn- update-user
+  [id new-values]
+  (try
+    (swap! 
+     in-memory-db
+     (fn [users]
+       (map
+        (fn [user]
+          (if (= id (user :id))
+            (merge user new-values)
+            user
+            )
+          )
+        users
+        )))
+    true
+    (catch IllegalStateException e false)))
+
 (defn add-user
   [id first-name last-name email state city password]
   (try
@@ -64,39 +82,11 @@
 
 (defn link-fb-account
   [id facebook-id]
-  (try
-    (swap! 
-     in-memory-db
-     (fn [users]
-       (map
-        (fn [user]
-          (if (= id (user :id))
-            (assoc user :facebook-id facebook-id)
-            user
-            )
-          )
-        users
-        )))
-    true
-    (catch IllegalStateException e false)))
+  (update-user id {:facebook-id facebook-id}))
 
 (defn update
   [id email first-name last-name state city]
-  (try
-    (swap! 
-     in-memory-db
-     (fn [users]
-       (map
-        (fn [user]
-          (if (= id (user :id))
-            (assoc user :email email :first-name first-name :last-name last-name :state state :city city)
-            user
-            )
-          )
-        users
-        )))
-    true
-    (catch IllegalStateException e false)))
+  (update-user id {:email email :first-name first-name :last-name last-name :state state :city city}))
 
 (defn find-by-id
   [id]
@@ -132,18 +122,9 @@
 
 (defn change-password
   [id new-password]
-  (try
-    (swap! 
-     in-memory-db
-     (fn [users]
-       (map
-        (fn [user]
-          (if (= id (user :id))
-            (assoc user :password new-password)
-            user
-            )
-          )
-        users
-        )))
-    true
-    (catch IllegalStateException e false)))
+  (update-user id {:password new-password}))
+
+(defn reset-password
+  [id ref-id]
+  (update-user id {:blocked true :password-reset-ref-id ref-id})
+  (find-by-id id))
