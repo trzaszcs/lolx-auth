@@ -47,7 +47,7 @@
 
 (defn- send-reset-pass!
   [to id]
-  (let [back-url (str (env :front-addr) "/!#/reset?=" id)]
+  (let [back-url (str (env :front-addr) "/!#/resetPassword?=" id)]
     (http/post
      (env :notification-addr)
      {:content-type :json
@@ -114,11 +114,12 @@
 
 (defn reset-password
   [request]
-  (let [user-id (get-in request [:params :user-id])
-        jwt (jwt/extract-token (:headers request))
+  (let [email (get-in request [:query-params :email])
+        user (dao/find-by-email email)
         ref-id (gen-id!)]
-    (if (and jwt (jwt/ok? jwt user-id))
+    (if user
           (do 
-            (send-reset-pass! (:email (dao/reset-password user-id ref-id)) ref-id)
+            (dao/reset-password (:id user) ref-id)
+            (send-reset-pass! email  ref-id)
             {:status 200})
           {:status 401})))
