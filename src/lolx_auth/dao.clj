@@ -112,6 +112,14 @@
     @in-memory-db
     )))
 
+(defn find-by-reset-ref-id
+  [pass-ref-id]
+  (first
+   (filter
+    #(= pass-ref-id (:password-reset-ref-id %))
+    @in-memory-db
+    )))
+
 (defn change-password
   [id new-password]
   (update-user id {:password new-password}))
@@ -120,3 +128,18 @@
   [id ref-id]
   (update-user id {:blocked true :password-reset-ref-id ref-id})
   (find-by-id id))
+
+(defn change-password-after-reset
+  [ref-id password]
+  (swap! 
+     in-memory-db
+     (fn [users]
+       (map
+        (fn [user]
+          (if (= ref-id (user :password-reset-ref-id))
+            (assoc user :blocked false :password password)
+            user
+            ))
+        users
+        )))
+  )

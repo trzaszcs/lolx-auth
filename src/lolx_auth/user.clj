@@ -114,7 +114,7 @@
 
 (defn reset-password
   [request]
-  (let [email (get-in request [:query-params :email])
+  (let [{email :email} (:body request)
         user (dao/find-by-email email)
         ref-id (gen-id!)]
     (if user
@@ -123,3 +123,16 @@
             (send-reset-pass! email  ref-id)
             {:status 200})
           {:status 401})))
+
+(defn change-password-after-reset
+  [request]
+  (let [{pass :password} (:body request)
+        reset-ref-id (get-in request [:params :reset-ref-id])
+        user (dao/find-by-reset-ref-id reset-ref-id)]
+    (if user
+      (do
+        (dao/change-password-after-reset reset-ref-id (digest/sha-256 pass))
+        {:status 200}
+        )
+      {:status 409}
+      )))
