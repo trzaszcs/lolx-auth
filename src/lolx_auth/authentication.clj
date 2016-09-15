@@ -15,9 +15,9 @@
 (defn auth
   [request]
   (let [{email :email password :password} (:body request)
-        user (dao/find email (digest/sha-256 password))
+        user (dao/find-by-email email)
         user-id (:id user)]
-    (if (nil? user)
+    (if (or (nil? user) (not (= (:password user) (digest/sha-256 password))))
       {:status 401}
       (build-jwt-response! user-id)
       )))

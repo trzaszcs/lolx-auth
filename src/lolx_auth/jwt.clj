@@ -28,3 +28,13 @@
      (verify jwt rsa-pub-key)
      (= subject (get-in jwt [:claims :sub]))) 
     ))
+
+(defn extract-token
+  [headers]
+  (let [authorization-header (get headers "authorization")]
+    (when (not (nil? authorization-header))
+      (clojure.string/replace-first authorization-header #"Bearer " ""))))
+
+(defn build-header
+  [issuer to]
+  {"Authorization" (str "Bearer " (produce issuer to))})

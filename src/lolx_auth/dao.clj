@@ -112,14 +112,6 @@
     @in-memory-db
     )))
 
-(defn find
-  [email password]
-  (first
-   (filter
-    #(and (= email (:email %)) (= password (:password %)))
-    @in-memory-db
-    )))
-
 (defn change-password
   [id new-password]
   (update-user id {:password new-password}))

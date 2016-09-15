@@ -16,9 +16,7 @@
         password "pass"]
     (auth (request email password)) => {:status 401}
     (provided
-     (dao/find 
-      email 
-      (digest/sha-256 password)) => nil)))
+     (dao/find-by-email email) => nil)))
 
 (fact "should return '200' with jwt token if user gave correct credentials"
   (let [email "deer@wp.pl"
@@ -28,7 +26,4 @@
     (auth (request email password)) => {:body {:jwt jwt :userId user-id}}
     (provided
      (jwt/produce "frontend" user-id) => jwt
-     (dao/find 
-      email 
-      (digest/sha-256 password)) => {:id user-id})
-    ))
+     (dao/find-by-email email) => {:id user-id :password (digest/sha-256 password)})))

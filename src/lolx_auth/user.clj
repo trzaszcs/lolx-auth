@@ -13,12 +13,6 @@
    [environ.core :refer [env]]
    [clojure.data.json :as json]))
 
-(defn- extract-jwt
-  [headers]
-  (let [authorization-header (get headers "authorization")]
-    (when (not (nil? authorization-header))
-      (clojure.string/replace-first authorization-header #"Bearer " ""))))
-
 (defn- camel-case
   [map]
   (transform-keys 
@@ -46,7 +40,7 @@
 (defn details
   [request]
   (let [user-id (:user-id (:params request))
-        jwt (extract-jwt (:headers request))]
+        jwt (jwt/extract-token (:headers request))]
     (if (nil? user-id)
       {:status 400}
       {:body (camel-case (serialize (get-user user-id jwt)))})))
@@ -57,7 +51,7 @@
     (http/post
      (env :notification-addr)
      {:content-type :json
-      :headers {"Authorization" (str "Bearer " (jwt/produce "lolx_auth" to))}
+      :headers (jwt/build-header "lolx_auth" to)
       :body (json/write-str {:type "resetPass" :email to :context {:url back-url}})})))
 
 (defn register
@@ -79,7 +73,7 @@
 (defn update-account
   [request]
   (let [user-id (get-in request [:params :user-id])
-        jwt (extract-jwt (:headers request))
+        jwt (jwt/extract-token (:headers request))
         {email :email
          first-name :firstName 
          last-name :lastName
@@ -98,7 +92,7 @@
 (defn change-password
   [request]
   (let [user-id (get-in request [:params :user-id])
-        jwt (extract-jwt (:headers request))
+        jwt (jwt/extract-token (:headers request))
         {new-password :newPassword 
          old-password :oldPassword} (:body request)]
     (if (not (validation/change-password-valid? new-password old-password))
@@ -121,7 +115,7 @@
 (defn reset-password
   [request]
   (let [user-id (get-in request [:params :user-id])
-        jwt (extract-jwt (:headers request))
+        jwt (jwt/extract-token (:headers request))
         ref-id (gen-id!)]
     (if (and jwt (jwt/ok? jwt user-id))
           (do 
