@@ -14,7 +14,8 @@
                  [environ "1.1.0"]
                  [clj-http "3.2.0"]]
   :plugins [[lein-ring "0.9.7"]
-            [lein-midje "3.1.3"]]
+            [lein-midje "3.1.3"]
+            [lein-environ "1.1.0"]]
   :ring {:handler lolx-auth.handler/app}
   :uberjar-name "lolx-auth-standalone.jar"
   :profiles

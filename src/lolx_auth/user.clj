@@ -47,12 +47,12 @@
 
 (defn- send-reset-pass!
   [to id]
-  (let [back-url (str (env :front-addr) "/!#/resetPassword?=" id)]
+  (let [back-url (str (env :front-addr) "/#!/resetPassword?id=" id)]
     (http/post
-     (env :notification-addr)
+     (str (env :notification-addr) "/notify") 
      {:content-type :json
       :headers (jwt/build-header "lolx_auth" to)
-      :body (json/write-str {:type "resetPass" :email to :context {:url back-url}})})))
+      :body (json/write-str {:type "reset" :email to :context {:url back-url}})})))
 
 (defn register
   [request]

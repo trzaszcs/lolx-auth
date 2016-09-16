@@ -17,11 +17,11 @@
 (defroutes app-routes
   (GET "/" [] "Hello World")
   (POST "/users" []  register)
+  (PUT  "/users/reset-password" [] reset-password)
+  (PUT  "/users/reset-password/:reset-ref-id/change-password" [] change-password-after-reset)
   (GET  "/users/:user-id" [] details)
   (PUT  "/users/:user-id" [] update-account)
   (PUT  "/users/:user-id/change-password" [] change-password)
-  (PUT  "/users/reset-password" [] reset-password)
-  (PUT  "/users/reset-password/:reset-ref-id" [] change-password-after-reset)
   (POST "/auth" [] auth)
   (POST "/auth-facebook" [] auth-facebook)
   (route/not-found "Not Found"))
