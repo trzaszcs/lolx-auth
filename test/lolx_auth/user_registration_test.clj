@@ -6,29 +6,27 @@
    [digest :as digest]))
 
 (defn request
-  [first-name last-name email password state city]
-  {:body {:firstName first-name :lastName last-name :email email :password password :state state :city city}}
+  [first-name last-name email password location]
+  {:body {:firstName first-name :lastName last-name :email email :password password :location location}}
 )
 
 (fact "if validation failed it should return '400'"
-  (register (request "john" "deer" "deer@wp.pl" "" "state" "city")) => {:status 400})
+  (register (request "john" "deer" "deer@wp.pl" "" "location")) => {:status 400})
 
 (fact "should return '409' if add-user returns false"
   (let [first-name "john"
         last-name "deer"
         email "deer@wp.pl"
         password "pass"
-        city "city"
-        state "state"]
-    (register (request first-name last-name email password state city)) => {:status 409}
+        location "location"]
+    (register (request first-name last-name email password location)) => {:status 409}
     (provided
      (dao/add-user 
       anything
       first-name 
       last-name 
       email
-      state
-      city
+      location
       (digest/sha-256 password)) => false)))
 
 (fact "should return '200' if add-user returns true"
@@ -36,16 +34,14 @@
         last-name "deer"
         email "deer@wp.pl"
         password "pass"
-        city "city"
-        state "state"]
-    (register (request first-name last-name email password state city)) => {:status 200}
+        location "location"]
+    (register (request first-name last-name email password location)) => {:status 200}
     (provided
      (dao/add-user 
       anything
       first-name 
       last-name 
       email 
-      state
-      city
+      location
       (digest/sha-256 password)) => true)
     ))

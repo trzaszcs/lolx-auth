@@ -60,12 +60,11 @@
          last-name :lastName 
          email :email 
          password :password 
-         city :city 
-         state :state} (:body request)]
-    (if (not (validation/registration-valid? first-name last-name email password state city))
+         location :location} (:body request)]
+    (if (not (validation/registration-valid? first-name last-name email password location))
       {:status 400}
       (do
-       (if (dao/add-user (gen-id!) first-name last-name email state city (digest/sha-256 password))
+       (if (dao/add-user (gen-id!) first-name last-name email location (digest/sha-256 password))
          {:status 200}
          {:status 409}
          )))))
@@ -77,14 +76,13 @@
         {email :email
          first-name :firstName 
          last-name :lastName
-         city :city 
-         state :state} (:body request)]
-    (if (not (validation/update-account-valid? email first-name last-name state city))
+         location :location} (:body request)]
+    (if (not (validation/update-account-valid? email first-name last-name location))
       {:status 400}
       (do
        (if (and jwt (jwt/ok? jwt user-id))
          (do 
-           (dao/update user-id email first-name last-name state city)
+           (dao/update user-id email first-name last-name location)
            {:status 200})
          {:status 401}
        )))))

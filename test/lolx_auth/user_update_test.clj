@@ -7,9 +7,9 @@
    [digest :as digest]))
 
 (defn request 
-  [user-id jwt email first-name last-name state city]
+  [user-id jwt email first-name last-name location]
   {:params {:user-id user-id}
-   :body {:email email :firstName first-name :lastName last-name :state state :city city}
+   :body {:email email :firstName first-name :lastName last-name :location location}
    :headers {"authorization" (str "Bearer " jwt) }})
 
 (fact "should return '401' when bad jwt"
@@ -18,9 +18,8 @@
         email "email@com.pl"
         first-name "Julio"
         last-name "Iglesias"
-        city "city"
-        state "state"]
-    (update-account (request user-id jwt email first-name last-name state city)) => {:status 401} 
+        location "location"]
+    (update-account (request user-id jwt email first-name last-name location)) => {:status 401} 
     (provided
      (jwt/ok? jwt user-id) => false)))
 
@@ -30,9 +29,8 @@
         email "email@com.pl"
         first-name "Julio"
         last-name "Iglesias"
-        city "city"
-        state "state"]
-    (update-account (request user-id jwt email first-name last-name state city)) => {:status 200} 
+        location "location"]
+    (update-account (request user-id jwt email first-name last-name location)) => {:status 200} 
     (provided
-     (dao/update user-id email first-name last-name state city) => true
+     (dao/update user-id email first-name last-name location) => true
      (jwt/ok? jwt user-id) => true)))

@@ -1,8 +1,6 @@
 (ns lolx-auth.dao
   (:require [clj-time.core :refer [now]] ))
 
-
-
 (defn unique-emails-validator
   [users]
   (distinct?
@@ -18,8 +16,7 @@
      :last-name "Deer" 
      :email "john@wp.pl"
      :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
-     :state "Wielkopolskie"
-     :city "Poznan"
+     :location {:title "Poznañ,  wielkopolskie" :latitude 52.406374 :longitude 16.9251681}
      :created (now)}] 
    :validator unique-emails-validator))
 
@@ -42,7 +39,7 @@
     (catch IllegalStateException e false)))
 
 (defn add-user
-  [id first-name last-name email state city password]
+  [id first-name last-name email location password]
   (try
     (swap! 
      in-memory-db
@@ -53,8 +50,7 @@
          :first-name first-name 
          :last-name last-name 
          :email email 
-         :state state 
-         :city city 
+         :location location
          :password password
          :type "standard"
          :created (now)})))
@@ -62,7 +58,7 @@
     (catch IllegalStateException e false)))
 
 (defn add-fb-user
-  [id first-name last-name email city facebook-id]
+  [id first-name last-name email location facebook-id]
   (try
     (swap! 
      in-memory-db
@@ -73,7 +69,7 @@
          :first-name first-name 
          :last-name last-name 
          :email email 
-         :city city 
+         :location location
          :type "facebook"
          :facebook-id facebook-id
          :created (now)})))
@@ -85,8 +81,8 @@
   (update-user id {:facebook-id facebook-id}))
 
 (defn update
-  [id email first-name last-name state city]
-  (update-user id {:email email :first-name first-name :last-name last-name :state state :city city}))
+  [id email first-name last-name location]
+  (update-user id {:email email :first-name first-name :last-name last-name :location location}))
 
 (defn find-by-id
   [id]

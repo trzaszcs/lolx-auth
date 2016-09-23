@@ -5,7 +5,7 @@
 
 
 (fact "returns true for all not-empty values"
-  (registration-valid? "john" "deer" "deer@wp.pl" "pass" "city" "state" ) => true)
+  (registration-valid? "john" "deer" "deer@wp.pl" "pass" "location" ) => true)
 
 (fact "returns false if last-name is empty"
-  (registration-valid? "john" "" "deer@wp.pl" "pass" "state" "city") => false)
+  (registration-valid? "john" "" "deer@wp.pl" "pass" "location") => false)
