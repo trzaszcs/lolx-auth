@@ -15,6 +15,7 @@
      :first-name "John" 
      :last-name "Deer" 
      :email "john@wp.pl"
+     :phone "345 334 421"
      :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
      :location {:title "Poznań,  wielkopolskie" :latitude 52.406374 :longitude 16.9251681}
      :created (now)}] 
@@ -39,7 +40,7 @@
     (catch IllegalStateException e false)))
 
 (defn add-user
-  [id first-name last-name email location password]
+  [id first-name last-name email phone location password]
   (try
     (swap! 
      in-memory-db
@@ -49,7 +50,8 @@
         {:id id 
          :first-name first-name 
          :last-name last-name 
-         :email email 
+         :email email
+         :phone phone
          :location location
          :password password
          :type "standard"
@@ -81,8 +83,8 @@
   (update-user id {:facebook-id facebook-id}))
 
 (defn update
-  [id email first-name last-name location]
-  (update-user id {:email email :first-name first-name :last-name last-name :location location}))
+  [id email phone first-name last-name location]
+  (update-user id {:email email :phone phone :first-name first-name :last-name last-name :location location}))
 
 (defn find-by-id
   [id]

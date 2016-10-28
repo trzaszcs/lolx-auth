@@ -60,11 +60,12 @@
          last-name :lastName 
          email :email 
          password :password 
-         location :location} (:body request)]
-    (if (not (validation/registration-valid? first-name last-name email password location))
+         location :location
+         phone :phone} (:body request)]
+    (if (not (validation/registration-valid? first-name last-name email phone password location))
       {:status 400}
       (do
-       (if (dao/add-user (gen-id!) first-name last-name email location (digest/sha-256 password))
+       (if (dao/add-user (gen-id!) first-name last-name email phone location (digest/sha-256 password))
          {:status 200}
          {:status 409}
          )))))
@@ -74,15 +75,16 @@
   (let [user-id (get-in request [:params :user-id])
         jwt (jwt/extract-token (:headers request))
         {email :email
+         phone :phone
          first-name :firstName 
          last-name :lastName
          location :location} (:body request)]
-    (if (not (validation/update-account-valid? email first-name last-name location))
+    (if (not (validation/update-account-valid? email phone first-name last-name location))
       {:status 400}
       (do
        (if (and jwt (jwt/ok? jwt user-id))
          (do 
-           (dao/update user-id email first-name last-name location)
+           (dao/update user-id email phone first-name last-name location)
            {:status 200})
          {:status 401}
        )))))
