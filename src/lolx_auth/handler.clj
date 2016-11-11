@@ -22,6 +22,7 @@
   (GET  "/users/:user-id" [] details)
   (PUT  "/users/:user-id" [] update-account)
   (PUT  "/users/:user-id/change-password" [] change-password)
+  (GET "/users/bulk" bulk-details)
   (POST "/auth" [] auth)
   (POST "/auth-facebook" [] auth-facebook)
   (route/not-found "Not Found"))

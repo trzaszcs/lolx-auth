@@ -17,6 +17,7 @@
 (def rsa-prv-key (private-key (io/resource "rsa/key") "password"))
 (def rsa-pub-key (public-key (io/resource "rsa/key.pub")))
 
+
 (defn produce
   [issuer user-id]
   (-> (build-claim issuer user-id) jwt (sign :RS256 rsa-prv-key) to-str))

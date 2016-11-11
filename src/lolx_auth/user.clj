@@ -29,13 +29,31 @@
 
 (defn serialize
   [user]
-  (let [iso-formatter (format/formatters :date-time)]
-    (assoc user :created (format/unparse iso-formatter (:created user)))
+  (if-let [created (:created user)]
+    (let [iso-formatter (format/formatters :date-time)]
+      (assoc user :created (format/unparse iso-formatter created))
     ))
+  user
+)
 
 (defn gen-id!
   []
   (str (java.util.UUID/randomUUID)))
+
+(defn bulk-details
+  [request]
+  (let [user-ids (:userId (:params request))
+        jwt (jwt/extract-token (:headers request))]
+    {:body
+     (camel-case
+      (serialize
+       (reduce
+        #(assoc %1 %2 (get-user %2 jwt))
+        {}
+        user-ids)
+       ))
+     }
+    ))
 
 (defn details
   [request]

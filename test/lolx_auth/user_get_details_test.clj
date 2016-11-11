@@ -25,3 +25,14 @@
     (provided
      (jwt/ok? jwt user-id) => true
      (dao/find-by-id user-id) => {:first-name first-name :email email})))
+
+(fact "should return bulk details"
+      (let [user-id-1 "1"
+            first-name-1 "Julio"
+            user-id-2 "2"
+            first-name-2 "Sebastien"]
+        (bulk-details {:params {:userId [user-id-1 user-id-2]}}) => {:body {user-id-1 {"firstName" first-name-1} user-id-2 {"firstName" first-name-2}}}
+        (provided
+         (dao/find-by-id user-id-1) => {:first-name first-name-1 :email "secret-email"}
+         (dao/find-by-id user-id-2) => {:first-name first-name-2 :email "secret-email"}
+         )))
