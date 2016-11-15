@@ -29,11 +29,12 @@
 
 (defn serialize
   [user]
-  (if-let [created (:created user)]
+  (if (:created user)
     (let [iso-formatter (format/formatters :date-time)]
-      (assoc user :created (format/unparse iso-formatter created))
-    ))
-  user
+      (update user :created #(format/unparse iso-formatter %))
+    )
+    user
+  )
 )
 
 (defn gen-id!
@@ -45,15 +46,12 @@
   (let [user-ids (:userId (:params request))
         jwt (jwt/extract-token (:headers request))]
     {:body
-     (camel-case
-      (serialize
        (reduce
-        #(assoc %1 %2 (get-user %2 jwt))
+        #(assoc %1 %2 (camel-case (serialize (get-user %2 jwt))))
         {}
         user-ids)
-       ))
-     }
-    ))
+     })
+ )
 
 (defn details
   [request]

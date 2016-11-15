@@ -7,7 +7,8 @@
                                     update-account 
                                     change-password 
                                     reset-password 
-                                    change-password-after-reset]]
+                                    change-password-after-reset
+                                    bulk-details]]
             [lolx-auth.authentication :refer [auth auth-facebook]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
@@ -19,10 +20,10 @@
   (POST "/users" []  register)
   (PUT  "/users/reset-password" [] reset-password)
   (PUT  "/users/reset-password/:reset-ref-id/change-password" [] change-password-after-reset)
+  (GET  "/users/bulk" [] bulk-details)
   (GET  "/users/:user-id" [] details)
   (PUT  "/users/:user-id" [] update-account)
   (PUT  "/users/:user-id/change-password" [] change-password)
-  (GET "/users/bulk" bulk-details)
   (POST "/auth" [] auth)
   (POST "/auth-facebook" [] auth-facebook)
   (route/not-found "Not Found"))
