@@ -43,7 +43,8 @@
 
 (defn bulk-details
   [request]
-  (let [user-ids (:userId (:params request))
+  (let [user-ids-param (:userId (:params request))
+        user-ids (if (coll? user-ids-param) user-ids-param [user-ids-param])
         jwt (jwt/extract-token (:headers request))]
     {:body
        (reduce
