@@ -13,7 +13,8 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.adapter.jetty :as jetty]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [clj-time.format :as format]))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
@@ -28,10 +29,42 @@
   (POST "/auth-facebook" [] auth-facebook)
   (route/not-found "Not Found"))
 
+(defonce iso-formatter (format/formatters :date-time))
+
+(defn serialize-date
+  [obj]
+  (if (sequential? obj)
+    (map serialize-date obj)
+    (if (map? obj)
+      (reduce
+       (fn [set entry]
+         (assoc set (first entry) (serialize-date (last entry)))
+         )
+       {}
+       obj)
+      (if (instance? org.joda.time.DateTime obj)
+        (format/unparse iso-formatter obj)
+        obj
+        )
+      )
+    ))
+
+(defn date-serializer
+  [handler]
+  (fn [request]
+    (let [response (handler request)
+          body (:body response)]
+      (if (and body (coll? body))
+        (assoc response :body (serialize-date body))
+        response
+        )
+      )))
+
 (def app
   (-> app-routes
-      (wrap-json-response)
       (wrap-json-body {:keywords? true :bigdecimals? true})
+      (date-serializer)
+      (wrap-json-response)
       (wrap-defaults (assoc-in site-defaults [:security] {:anti-forgery false}))))
 
 

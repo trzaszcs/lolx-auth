@@ -4,7 +4,6 @@
    [lolx-auth.validation :as validation]
    [lolx-auth.dao :as dao]
    [lolx-auth.jwt :as jwt]
-   [clj-time.format :as format]
    [camel-snake-kebab.core :refer :all]
    [camel-snake-kebab.extras :refer [transform-keys]]
    [digest :as digest]
@@ -27,16 +26,6 @@
        (dissoc details :password :email :last-name :city :state) 
        )))
 
-(defn serialize
-  [user]
-  (if (:created user)
-    (let [iso-formatter (format/formatters :date-time)]
-      (update user :created #(format/unparse iso-formatter %))
-    )
-    user
-  )
-)
-
 (defn gen-id!
   []
   (str (java.util.UUID/randomUUID)))
@@ -48,7 +37,7 @@
         jwt (jwt/extract-token (:headers request))]
     {:body
        (reduce
-        #(assoc %1 %2 (camel-case (serialize (get-user %2 jwt))))
+        #(assoc %1 %2 (camel-case (get-user %2 jwt)))
         {}
         user-ids)
      })
@@ -60,7 +49,7 @@
         jwt (jwt/extract-token (:headers request))]
     (if (nil? user-id)
       {:status 400}
-      {:body (camel-case (serialize (get-user user-id jwt)))})))
+      {:body (camel-case (get-user user-id jwt))})))
 
 (defn- send-reset-pass!
   [to id]
@@ -73,19 +62,26 @@
 
 (defn register
   [request]
-  (let [{first-name :firstName 
-         last-name :lastName 
-         email :email 
-         password :password 
+  (let [{first-name :firstName
+         last-name :lastName
+         nick :nick
+         email :email
+         password :password
          location :location
          phone :phone} (:body request)]
-    (if (not (validation/registration-valid? first-name last-name email phone password location))
+    (if (not (validation/registration-valid? first-name last-name nick email phone password location))
       {:status 400}
-      (do
-       (if (dao/add-user (gen-id!) first-name last-name email phone location (digest/sha-256 password))
-         {:status 200}
-         {:status 409}
-         )))))
+      (if (not (dao/nick-unique? nick))
+        {:status 409 :body {:nick "not unique"}}
+        (if (not (dao/email-unique? email))
+          {:status 409 :body {:email "not unique"}}
+          (if (dao/add-user (gen-id!) first-name last-name nick email phone location (digest/sha-256 password))
+            {:status 200}
+            {:status 409}
+            )
+          )
+        )
+       )))
 
 (defn update-account
   [request]

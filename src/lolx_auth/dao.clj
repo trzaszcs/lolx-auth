@@ -3,17 +3,44 @@
 
 (defn unique-emails-validator
   [users]
-  (distinct?
-   (map
-    #(:email %)
-    users)))
+  (and
+   (distinct?
+    (map
+     #(:email %)
+     users))
+   (distinct?
+    (map
+     #(:nick %)
+     users))
+   ))
 
-(def in-memory-db 
-  (atom 
+(def in-memory-db
+  (atom
    [{
-     :id "666"
-     :first-name "John" 
-     :last-name "Deer" 
+     :id "1"
+     :first-name "Kacper"
+     :last-name "Nowak"
+     :nick "kacper321"
+     :email "kacper@wp.pl"
+     :phone "345 334 421"
+     :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
+     :location {:title "Poznań,  wielkopolskie" :latitude 52.406374 :longitude 16.9251681}
+     :created (now)}
+    {
+     :id "1"
+     :first-name "Melchior"
+     :last-name "Kowalski"
+     :nick "melchior2"
+     :email "melchior@wp.pl"
+     :phone "345 334 421"
+     :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
+     :location {:title "Poznań,  wielkopolskie" :latitude 52.406374 :longitude 16.9251681}
+     :created (now)}
+    {
+     :id "3"
+     :first-name "Baltazar"
+     :last-name "Rybicki"
+     :nick "rambo"
      :email "john@wp.pl"
      :phone "345 334 421"
      :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
@@ -24,7 +51,7 @@
 (defn- update-user
   [id new-values]
   (try
-    (swap! 
+    (swap!
      in-memory-db
      (fn [users]
        (map
@@ -39,17 +66,41 @@
     true
     (catch IllegalStateException e false)))
 
+(defn- lazy-contains? [coll key]
+  (boolean (some #(= % key) coll)))
+
+(defn nick-unique?
+  [nick]
+  (lazy-contains?
+   (map
+    #(:nick %)
+    @in-memory-db)
+    nick
+   )
+  )
+
+(defn email-unique?
+  [email]
+  (lazy-contains?
+   (map
+    #(:email %)
+    @in-memory-db)
+   email
+   )
+  )
+
 (defn add-user
-  [id first-name last-name email phone location password]
+  [id first-name last-name nick email phone location password]
   (try
-    (swap! 
+    (swap!
      in-memory-db
      (fn [users]
-       (conj 
-        users 
-        {:id id 
-         :first-name first-name 
-         :last-name last-name 
+       (conj
+        users
+        {:id id
+         :first-name first-name
+         :last-name last-name
+         :nick nick
          :email email
          :phone phone
          :location location

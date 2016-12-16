@@ -25,8 +25,8 @@
   (all-not-empty? [email password]))
 
 (defn registration-valid? 
-  [first-name last-name email phone  password location]
-  (all-not-empty? [first-name last-name email password location phone]))
+  [first-name last-name nick email phone password location]
+  (all-not-empty? [first-name last-name nick email password location phone]))
 
 (defn update-account-valid? 
     [email phone first-name last-name location]
