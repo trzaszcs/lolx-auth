@@ -27,7 +27,7 @@
      :location {:title "Poznań,  wielkopolskie" :latitude 52.406374 :longitude 16.9251681}
      :created (now)}
     {
-     :id "1"
+     :id "2"
      :first-name "Melchior"
      :last-name "Kowalski"
      :nick "melchior2"

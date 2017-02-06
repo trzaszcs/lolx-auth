@@ -2,7 +2,7 @@
   (:require 
    [clj-jwt.core  :refer :all]
    [clj-jwt.key   :refer [private-key public-key]]
-   [clj-time.core :refer [now plus days]]
+   [clj-time.core :refer [now plus days seconds]]
    [clojure.java.io :as io]))
 
 
