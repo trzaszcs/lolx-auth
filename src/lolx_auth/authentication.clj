@@ -7,7 +7,6 @@
    [ring.util.response :refer :all]
    [digest :as digest]))
 
-
 (defn- build-jwt-response!
   [user-id]
   {:body {:jwt (jwt/produce "frontend" user-id) :userId user-id }})

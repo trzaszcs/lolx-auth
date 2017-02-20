@@ -14,30 +14,32 @@
 
 (defn- camel-case
   [map]
-  (transform-keys 
+  (transform-keys
      ->camelCaseString
      map))
 
-(defn- get-user
-  [user-id jwt]
+(defn get-user
+  [user-id full-details]
   (let [details (dao/find-by-id user-id)]
-     (if (and jwt (jwt/ok? jwt user-id))
-       (dissoc details :password) 
-       (dissoc details :password :email :last-name :city :state) 
-       )))
+     (if full-details
+       (dissoc details :password)
+       (dissoc details :password :email :last-name :city :state)
+ )))
 
 (defn gen-id!
   []
   (str (java.util.UUID/randomUUID)))
 
+
 (defn bulk-details
   [request]
   (let [user-ids-param (:userId (:params request))
         user-ids (if (coll? user-ids-param) user-ids-param [user-ids-param])
-        jwt (jwt/extract-token (:headers request))]
+        jwt (jwt/extract-token (:headers request))
+        full-details (jwt/ok? jwt (reduce str user-ids))]
     {:body
        (reduce
-        #(assoc %1 %2 (camel-case (get-user %2 jwt)))
+        #(assoc %1 %2 (camel-case (get-user %2 full-details)))
         {}
         user-ids)
      })
@@ -49,7 +51,7 @@
         jwt (jwt/extract-token (:headers request))]
     (if (nil? user-id)
       {:status 400}
-      {:body (camel-case (get-user user-id jwt))})))
+      {:body (camel-case (get-user user-id (jwt/ok? jwt user-id)))})))
 
 (defn- send-reset-pass!
   [to id]
