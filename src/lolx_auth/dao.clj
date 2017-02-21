@@ -71,22 +71,22 @@
 
 (defn nick-unique?
   [nick]
-  (lazy-contains?
-   (map
-    #(:nick %)
-    @in-memory-db)
-    nick
-   )
+  (not (lazy-contains?
+        (map
+         #(:nick %)
+         @in-memory-db)
+        nick
+        ))
   )
 
 (defn email-unique?
   [email]
-  (lazy-contains?
-   (map
-    #(:email %)
-    @in-memory-db)
-   email
-   )
+  (not (lazy-contains?
+        (map
+         #(:email %)
+         @in-memory-db)
+        email
+        ))
   )
 
 (defn add-user

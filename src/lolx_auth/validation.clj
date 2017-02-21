@@ -24,15 +24,15 @@
   [email password]
   (all-not-empty? [email password]))
 
-(defn registration-valid? 
+(defn registration-valid?
   [first-name last-name nick email phone password location]
-  (all-not-empty? [first-name last-name nick email password location phone]))
+  (all-not-empty? [first-name last-name nick email password location]))
 
-(defn update-account-valid? 
+(defn update-account-valid?
     [email phone first-name last-name location]
     (all-not-empty?
-     [email first-name last-name location phone]))
+     [email first-name last-name location]))
 
-(defn change-password-valid? 
+(defn change-password-valid?
   [old-password new-password]
   (all-not-empty? [old-password new-password]))
