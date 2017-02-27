@@ -36,7 +36,7 @@
   (let [user-ids-param (:userId (:params request))
         user-ids (if (coll? user-ids-param) user-ids-param [user-ids-param])
         jwt (jwt/extract-token (:headers request))
-        full-details (jwt/ok? jwt (reduce str user-ids))]
+        full-details (and jwt (jwt/ok? jwt (reduce str user-ids)))]
     {:body
        (reduce
         #(assoc %1 %2 (camel-case (get-user %2 full-details)))
