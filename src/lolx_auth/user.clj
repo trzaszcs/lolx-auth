@@ -48,10 +48,11 @@
 (defn details
   [request]
   (let [user-id (:user-id (:params request))
-        jwt (jwt/extract-token (:headers request))]
+        jwt (jwt/extract-token (:headers request))
+        detailed (and jwt (jwt/ok? jwt user-id))]
     (if (nil? user-id)
       {:status 400}
-      {:body (camel-case (get-user user-id (jwt/ok? jwt user-id)))})))
+      {:body (camel-case (get-user user-id detailed))})))
 
 (defn- send-reset-pass!
   [to id]
