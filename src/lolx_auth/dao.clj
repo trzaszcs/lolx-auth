@@ -20,7 +20,7 @@
      :id "1"
      :first-name "Kacper"
      :last-name "Nowak"
-     :nick "kacper321"
+     :nick "kacper"
      :email "some-kacper@wp.pl"
      :phone "345 334 421"
      :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
