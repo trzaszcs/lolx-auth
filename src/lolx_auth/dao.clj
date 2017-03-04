@@ -1,7 +1,7 @@
 (ns lolx-auth.dao
   (:require [clj-time.core :refer [now]] ))
 
-(defn unique-emails-validator
+(defn unique-email-nick-validator
   [users]
   (and
    (distinct?
@@ -21,7 +21,7 @@
      :first-name "Kacper"
      :last-name "Nowak"
      :nick "kacper321"
-     :email "kacper@wp.pl"
+     :email "some-kacper@wp.pl"
      :phone "345 334 421"
      :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
      :location {:title "Poznań,  wielkopolskie" :latitude 52.406374 :longitude 16.9251681}
@@ -31,7 +31,7 @@
      :first-name "Melchior"
      :last-name "Kowalski"
      :nick "melchior2"
-     :email "melchior@wp.pl"
+     :email "some-melchior@wp.pl"
      :phone "345 334 421"
      :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
      :location {:title "Poznań,  wielkopolskie" :latitude 52.406374 :longitude 16.9251681}
@@ -41,12 +41,12 @@
      :first-name "Baltazar"
      :last-name "Rybicki"
      :nick "rambo"
-     :email "john@wp.pl"
+     :email "some-balazar@wp.pl"
      :phone "345 334 421"
      :password "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"
      :location {:title "Poznań,  wielkopolskie" :latitude 52.406374 :longitude 16.9251681}
-     :created (now)}] 
-   :validator unique-emails-validator))
+     :created (now)}]
+   :validator unique-email-nick-validator))
 
 (defn- update-user
   [id new-values]
@@ -153,11 +153,19 @@
     @in-memory-db
     )))
 
-(defn find-by-email
-  [email]
+(defn find-by-email-or-nick
+  [txt]
   (first
    (filter
-    #(= email (:email %))
+    #(or (= txt (:email %)) (= txt (:nick %)))
+    @in-memory-db
+    )))
+
+(defn find-by-email
+  [txt]
+  (first
+   (filter
+    #(= txt (:email %))
     @in-memory-db
     )))
 
@@ -180,7 +188,7 @@
 
 (defn change-password-after-reset
   [ref-id password]
-  (swap! 
+  (swap!
      in-memory-db
      (fn [users]
        (map

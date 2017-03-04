@@ -92,14 +92,14 @@
         jwt (jwt/extract-token (:headers request))
         {email :email
          phone :phone
-         first-name :firstName 
+         first-name :firstName
          last-name :lastName
          location :location} (:body request)]
     (if (not (validation/update-account-valid? email phone first-name last-name location))
       {:status 400}
       (do
        (if (and jwt (jwt/ok? jwt user-id))
-         (do 
+         (do
            (dao/update user-id email phone first-name last-name location)
            {:status 200})
          {:status 401}
@@ -113,9 +113,9 @@
          old-password :oldPassword} (:body request)]
     (if (not (validation/change-password-valid? new-password old-password))
       {:status 400}
-      (do 
+      (do
         (if (and jwt (jwt/ok? jwt user-id))
-          (do 
+          (do
             (let [user (dao/find-by-id user-id)]
               (if (= (digest/sha-256 old-password) (:password user)) 
                 (do 
@@ -134,7 +134,7 @@
         user (dao/find-by-email email)
         ref-id (gen-id!)]
     (if user
-          (do 
+          (do
             (dao/reset-password (:id user) ref-id)
             (send-reset-pass! email  ref-id)
             {:status 200})

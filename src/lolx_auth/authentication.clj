@@ -13,8 +13,8 @@
 
 (defn auth
   [request]
-  (let [{email :email password :password} (:body request)
-        user (dao/find-by-email email)
+  (let [{login :login password :password} (:body request)
+        user (dao/find-by-email-or-nick login)
         user-id (:id user)]
     (if (or (nil? user) (not (= (:password user) (digest/sha-256 password))))
       {:status 401}
