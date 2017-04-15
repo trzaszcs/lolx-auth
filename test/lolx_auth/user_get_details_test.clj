@@ -36,3 +36,16 @@
          (dao/find-by-id user-id-1) => {:first-name first-name-1 :email "secret-email"}
          (dao/find-by-id user-id-2) => {:first-name first-name-2 :email "secret-email"}
          )))
+
+(fact "should return 404 for not existing user"
+      (let [user-id "234"
+            first-name "Julio"
+            email "secret-email"
+            jwt "SOME-JWT"]
+        (details {:params {:user-id user-id} :headers {"authorization" (str "Bearer " jwt) }}) 
+        => 
+        {:status 404} 
+        (provided
+         (jwt/ok? jwt user-id) => true
+         (dao/find-by-id user-id) => nil)))
+

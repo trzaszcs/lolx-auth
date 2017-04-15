@@ -52,7 +52,11 @@
         detailed (and jwt (jwt/ok? jwt user-id))]
     (if (nil? user-id)
       {:status 400}
-      {:body (camel-case (get-user user-id detailed))})))
+      (if-let [user (get-user user-id detailed)]
+        {:body (camel-case user)}
+        {:status 404}
+        )
+    )))
 
 (defn- send-reset-pass!
   [to id]
